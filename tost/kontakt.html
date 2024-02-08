@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firestore Data Display</title>
+     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Dodane ustawienie flex-direction na kolumnę */
+            align-items: center; /* Dodane wycentrowanie wzdłuż osi pionowej */
+        }
+
+        #adminPanelTitle {
+            margin-top: 20px; /* Dodane odstępy na górze */
+        }
+
+        #contactList {
+            list-style-type: none;
+            padding: 0;
+            overflow-y: auto;
+            max-height: 80vh;
+            width: 100%;
+        }
+
+        .contactItem {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            margin-left: 20px;
+            margin-right: 20px;
+            padding: 15px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .contactItem:hover {
+            transform: scale(1.008);
+        }
+
+        .messageContent {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .showMessageBtn {
+            cursor: pointer;
+            color: #007BFF;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .deleteBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .contactItem:hover .deleteBtn {
+            display: block;
+        }
+    </style>
+    <!-- Dodaj link do Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+</head>
+<body>
+
+<!-- Wyświetl dane tutaj -->
+<h1 id="adminPanelTitle"><a href="admin_panel.html">Admin Panel</a></h1>
+<ul id="contactList"></ul>
+
+<script>
+    // Skonfiguruj Firebase z danymi swojej aplikacji
+const firebaseConfig = {
+  apiKey: "AIzaSyD67hcKrDTHGeW30e5KwsxIfw3cFc82Wnw",
+  authDomain: "localhost",
+  databaseURL: "https://stronamakaron-default-rtdb.firebaseio.com",
+  projectId: "stronamakaron",
+  storageBucket: "stronamakaron.appspot.com",
+  messagingSenderId: "481194687354",
+  appId: "1:481194687354:web:69e692a5508f15d21e34c3",
+  measurementId: "G-9K2461DJGY"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+    
+    // Funkcja do sprawdzenia, czy użytkownik jest zalogowany jako administrator
+function checkAdminAuthStatus(adminUID) {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (!user || user.uid !== adminUID) {
+            // Użytkownik nie jest zalogowany jako administrator, przekieruj na stronę index.html
+            window.location.href = 'index.html';
+        }
+    });
+}
+
+// Sprawdź, czy użytkownik jest zalogowany jako administrator (UID: DkQXcCZgwkOkmQtGgKl4uFBlMxo2)
+checkAdminAuthStatus('DkQXcCZgwkOkmQtGgKl4uFBlMxo2');
+    
+    const firestore = firebase.firestore();
+    const contactCollection = firestore.collection("kontakt");
+    
+
+    const renderContacts = () => {
+        contactCollection.get().then((querySnapshot) => {
+            const contactList = document.getElementById("contactList");
+            contactList.innerHTML = '';
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const listItem = document.createElement("li");
+                listItem.classList.add("contactItem");
+
+                listItem.innerHTML = `
+                    <p><strong>Imię:</strong> ${data.imie}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Temat:</strong> ${data.temat}</p>
+                    <div class="messageContent">${data.wiadomosc}</div>
+                    <button class="showMessageBtn">Pokaż wiadomość</button>
+                    <button class="deleteBtn" onclick="deleteContact('${doc.id}')">Usuń</button>
+                `;
+
+                const messageContent = listItem.querySelector(".messageContent");
+                const showMessageBtn = listItem.querySelector(".showMessageBtn");
+
+                showMessageBtn.addEventListener("click", () => {
+                    messageContent.style.display = "block";
+                    showMessageBtn.style.display = "none";
+                });
+
+                contactList.appendChild(listItem);
+            });
+        }).catch((error) => {
+            console.error("Błąd pobierania danych:", error);
+        });
+    };
+    
+    
+
+    const deleteContact = (docId) => {
+        contactCollection.doc(docId).delete().then(() => {
+            console.log("Dokument został pomyślnie usunięty!");
+            renderContacts(); // Odśwież listę po usunięciu
+        }).catch((error) => {
+            console.error("Błąd podczas usuwania dokumentu:", error);
+        });
+    };
+
+    // Wywołaj funkcję renderującą dane po załadowaniu strony
+    renderContacts();
+</script>
+
+</body>
+</html>

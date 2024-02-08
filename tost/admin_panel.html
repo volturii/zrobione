@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+
+    <section class="menu">
+      <nav>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+<div class="logo">
+  <a class="h1"><img src="https://firebasestorage.googleapis.com/v0/b/stronamakaron.appspot.com/o/logo%20salachh.png?alt=media&token=139ea98f-c005-41a7-a837-4ea9c39b13b5" alt="Zdjęcie" width="113" height="auto"></a>
+</div>
+
+        <ul>
+    <li><a href="kontakt.html">Wiadomości kontaktowe</a></li>
+    <li><a href="mapa.html">Edytuj punkty na mapie</a></li>
+    <li><a href="Produkty.html">Edytuj produkty</a></li>
+    <li><a href="Zamowienia.html">Dodaj zamówienie</a></li>
+        </ul>
+          
+                    <!-- ikona user-->
+
+          
+      </nav>
+          
+
+          
+    </section>
+    
+
+     <h1>Admin Panel</h1>  
+    
+   <button onclick="logout()" style="position: fixed; top: 80px; right: 20px;">Wyloguj</button>
+    
+    
+     <h3>Wyszukaj zamówienia po nazwie uzytkownika (formularz)</h3>
+    <!-- Dodaj element input do wprowadzania tekstu do filtrowania -->
+    <input type="text" id="userFilter" placeholder="Filter users">
+    
+
+    <!-- Dodaj element select do wyboru użytkownika -->
+    <select id="userSelect">
+        <!-- Options zostaną dodane dynamicznie w kodzie JavaScript -->
+    </select>
+<button onclick="clearSearchResults()">Wyczyść wyniki</button>
+    <!-- Kontener na wyświetlanie listy użytkowników -->
+    <div id="userListDiv"></div>
+
+<!-- Kontener na wyświetlanie formularzy -->
+<div id="formData"></div>
+
+<!-- Kontener na wyświetlanie szczegółów formularza -->
+<div id="formDetailsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="formDetails"></div>
+    </div>
+</div>
+
+<!-- Dodaj pole textarea do wprowadzania opisu -->
+<div id="opisInputContainer" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeOpisInput()">&times;</span>
+        <textarea id="newOpisInput"></textarea>
+        <button onclick="saveOpis()">Zapisz Opis</button>
+    </div>
+</div>
+    
+    <br><br><br><br>
+    
+    
+
+        <h3>Wyszukaj zamówienia po dacie</h3>
+
+    <label for="searchDate">Wyświetl wszystkie zamówienia z danego dnia:</label>
+    <input type="date" id="searchDate">
+
+    <button onclick="searchForms()">Wyszukaj</button>
+    <button onclick="clearResults()">Wyczyść wyniki</button> <!-- Dodany przycisk Wyczyść -->
+    <!-- Kontener na wyświetlanie formularzy -->
+    <div id="searchResults"></div>
+<br> <br> <br> <br> <br>
+ 
+      <h3>Raport</h3>
+<form id="dateRangeForm">
+    <label for="startDate">Data początkowa:</label>
+    <input type="date" id="startDate" required>
+
+    <label for="endDate">Data końcowa:</label>
+    <input type="date" id="endDate" required>
+
+    <button type="button" id="generateReportButton">Generuj raport</button>
+    <button onclick="clearRaportResults()">Wyczyść wyniki</button>
+</form>
+
+<div id="productReport"></div>
+    
+    <br><br><br><br>
+    
+
+</body>
+    
+    
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    
+    <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyD67hcKrDTHGeW30e5KwsxIfw3cFc82Wnw",
+  authDomain: "localhost",
+  databaseURL: "https://stronamakaron-default-rtdb.firebaseio.com",
+  projectId: "stronamakaron",
+  storageBucket: "stronamakaron.appspot.com",
+  messagingSenderId: "481194687354",
+  appId: "1:481194687354:web:69e692a5508f15d21e34c3",
+  measurementId: "G-9K2461DJGY"
+};
+  // Zainicjuj Firebase
+  firebase.initializeApp(firebaseConfig);
+        
+        
+        // Dodaj funkcję logout
+function logout() {
+    firebase.auth().signOut().then(() => {
+        // Wylogowano użytkownika
+        console.log("Użytkownik wylogowany.");
+
+        // Przekieruj na stronę index.html
+        window.location.href = "index.html";
+    }).catch((error) => {
+        console.error("Błąd podczas wylogowywania:", error);
+    });
+}
+</script>
+    
+    <script src="admin_panel.js"></script>
+    <script src="data.js"></script>
+</html>

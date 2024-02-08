@@ -1,0 +1,30 @@
+/* Stylizacja nagłówka */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Stylizacja listy kontaktów */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+/* Stylizacja pól listy kontaktów */
+.email {
+  font-weight: bold;
+}
+
+.temat {
+  font-style: italic;
+}
+
+.wiadomosc {
+  white-space: pre-wrap;
+}
